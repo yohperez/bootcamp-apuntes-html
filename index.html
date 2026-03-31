@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hoja de Ruta — Desarrollo Web para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --paper: #f5f0e8;
+    --cream: #ede6d3;
+    --accent: #b5451b;
+    --gold: #c9983a;
+    --mid: #6b5c45;
+    --light: #d4c9b0;
+    --chapter-bg: #2b1f0e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
+
+  /* ── FRONTISPIECE ── */
+  .frontispiece {
+    min-height: 100vh;
+    background-color: var(--chapter-bg);
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% 40%, #3d2a10 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .frontispiece::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--paper));
+  }
+
+  .fp-ornament {
+    color: var(--gold);
+    font-size: 2.4rem;
+    letter-spacing: 0.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.7;
+    animation: fadeDown 1s ease both;
+  }
+
+  .fp-series {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.4rem;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 1.5rem;
+    animation: fadeDown 1s 0.1s ease both;
+  }
+
+  .fp-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 900;
+    color: var(--paper);
+    text-align: center;
+    line-height: 1.05;
+    animation: fadeDown 1s 0.2s ease both;
+  }
+
+  .fp-title em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+
+  .fp-rule {
+    width: 80px;
+    height: 2px;
+    background: var(--gold);
+    margin: 2.5rem auto;
+    animation: expand 1s 0.4s ease both;
+    transform-origin: center;
+  }
+
+  .fp-subtitle {
+    font-size: 1.1rem;
+    color: rgba(245,240,232,0.65);
+    text-align: center;
+    font-style: italic;
+    max-width: 480px;
+    animation: fadeDown 1s 0.5s ease both;
+  }
+
+  .fp-toc-label {
+    margin-top: 4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.35rem;
+    color: var(--gold);
+    opacity: 0.5;
+    text-transform: uppercase;
+    animation: fadeDown 1s 0.6s ease both;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--cream);
+    border-top: 4px solid var(--accent);
+    padding: 80px clamp(24px, 8vw, 140px);
+    position: relative;
+  }
+
+  .toc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.4rem;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 3rem;
+  }
+
+  .toc-list {
+    list-style: none;
+    border-top: 1px solid var(--light);
+  }
+
+  .toc-list li {
+    border-bottom: 1px solid var(--light);
+  }
+
+  .toc-list a {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1.1rem 0;
+    text-decoration: none;
+    color: var(--ink);
+    transition: color 0.2s;
+  }
+
+  .toc-list a:hover { color: var(--accent); }
+
+  .toc-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    color: var(--accent);
+    min-width: 2.5rem;
+    font-style: italic;
+  }
+
+  .toc-name {
+    flex: 1;
+    font-size: 1.05rem;
+  }
+
+  .toc-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--mid);
+    letter-spacing: 0.1rem;
+  }
+
+  /* ── CHAPTER HEADER ── */
+  .chapter {
+    padding: 100px clamp(24px, 8vw, 140px) 80px;
+    position: relative;
+  }
+
+  .chapter:nth-child(even) {
+    background: var(--cream);
+  }
+
+  .chapter-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .chapter-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--light);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .chapter-label-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .chapter-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.4rem;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .chapter-timing {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--mid);
+    background: var(--light);
+    padding: 2px 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  .chapter-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 2rem;
+    max-width: 700px;
+  }
+
+  .chapter-rule {
+    width: 40px;
+    height: 3px;
+    background: var(--accent);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ── BODY TEXT ── */
+  .chapter-body {
+    max-width: 680px;
+    font-size: 1.05rem;
+    color: #2e2314;
+  }
+
+  .chapter-body p {
+    margin-bottom: 1.4em;
+  }
+
+  .chapter-body strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .chapter-body em {
+    font-style: italic;
+    color: var(--mid);
+  }
+
+  /* ── SECTION HEADING ── */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--chapter-bg);
+    margin: 2.5rem 0 1rem;
+    padding-left: 1.2rem;
+    border-left: 3px solid var(--gold);
+  }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    background: var(--chapter-bg);
+    color: var(--paper);
+    padding: 1.6rem 2rem;
+    margin: 2.5rem 0;
+    position: relative;
+    border-left: 4px solid var(--gold);
+    max-width: 640px;
+  }
+
+  .callout-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.35rem;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.7rem;
+  }
+
+  .callout p {
+    font-size: 0.97rem;
+    line-height: 1.7;
+    color: rgba(245,240,232,0.85);
+    margin: 0;
+  }
+
+  .callout strong { color: var(--gold); font-weight: 600; }
+
+  /* ── INTERLUDE / BREAK ── */
+  .interlude {
+    background:
+      linear-gradient(135deg, #c9983a22 0%, transparent 60%),
+      var(--cream);
+    border-top: 2px dashed var(--gold);
+    border-bottom: 2px dashed var(--gold);
+    padding: 60px clamp(24px, 8vw, 140px);
+    text-align: center;
+  }
+
+  .interlude-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .interlude-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-style: italic;
+    color: var(--chapter-bg);
+    margin-bottom: 0.5rem;
+  }
+
+  .interlude-sub {
+    font-size: 0.9rem;
+    color: var(--mid);
+    font-style: italic;
+  }
+
+  /* ── OBJECTIVE PILL ── */
+  .objective {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--accent);
+    color: white;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05rem;
+    margin: 1.5rem 0;
+  }
+
+  .objective::before { content: '⊙'; font-size: 1rem; }
+
+  /* ── PRACTICE BLOCK ── */
+  .practice {
+    border: 1.5px solid var(--gold);
+    padding: 1.4rem 1.8rem;
+    margin: 2rem 0;
+    max-width: 620px;
+    position: relative;
+  }
+
+  .practice::before {
+    content: 'PRÁCTICA';
+    position: absolute;
+    top: -0.6rem;
+    left: 1.2rem;
+    background: var(--paper);
+    padding: 0 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3rem;
+    color: var(--gold);
+  }
+
+  .chapter:nth-child(even) .practice::before {
+    background: var(--cream);
+  }
+
+  .practice p {
+    margin: 0;
+    font-size: 0.97rem;
+    color: var(--ink);
+  }
+
+  /* ── COLOPHON ── */
+  .colophon {
+    background: var(--chapter-bg);
+    color: rgba(245,240,232,0.5);
+    text-align: center;
+    padding: 60px 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1rem;
+  }
+
+  .colophon span {
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes expand {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 1; }
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .chapter-num { font-size: 3.5rem; }
+    .toc { padding: 60px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════ FRONTISPIECE -->
+<section class="frontispiece">
+  <div class="fp-ornament">✦ ✦ ✦</div>
+  <p class="fp-series">Bootcamp IA · Módulo Web</p>
+  <h1 class="fp-title">
+    Hoja de<br>
+    <em>Ruta</em>
+  </h1>
+  <div class="fp-rule"></div>
+  <p class="fp-subtitle">
+    Guía estructurada de formación técnica en desarrollo web
+    para especialistas en Inteligencia Artificial
+  </p>
+  <p class="fp-toc-label">▾ Tabla de Contenidos</p>
+</section>
+
+<!-- ════════════════════════════════════════ TABLE OF CONTENTS -->
+<nav class="toc">
+  <p class="toc-title">Índice del Libro</p>
+  <ul class="toc-list">
+    <li>
+      <a href="#cap1">
+        <span class="toc-num">I</span>
+        <span class="toc-name">Introducción — El Puente de Datos</span>
+        <span class="toc-time">10 min</span>
+      </a>
+    </li>
+    <li>
+      <a href="#cap2">
+        <span class="toc-num">II</span>
+        <span class="toc-name">El Esqueleto — HTML y la Anatomía del DOM</span>
+        <span class="toc-time">40 min</span>
+      </a>
+    </li>
+    <li>
+      <a href="#cap3">
+        <span class="toc-num">III</span>
+        <span class="toc-name">Intervalo de Recuperación</span>
+        <span class="toc-time">10 min</span>
+      </a>
+    </li>
+    <li>
+      <a href="#cap4">
+        <span class="toc-num">IV</span>
+        <span class="toc-name">Los Mapas — CSS y el Arte de Seleccionar</span>
+        <span class="toc-time">20 min</span>
+      </a>
+    </li>
+    <li>
+      <a href="#cap5">
+        <span class="toc-num">V</span>
+        <span class="toc-name">Laboratorio Práctico — Trabajamos en VS Code</span>
+        <span class="toc-time">30 min</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<!-- ════════════════════════════════════════ CAPÍTULO 1 -->
+<article class="chapter reveal" id="cap1">
+  <div class="chapter-meta">
+    <span class="chapter-num">I</span>
+    <div class="chapter-label-group">
+      <span class="chapter-label">Capítulo Uno</span>
+      <span class="chapter-timing">⏱ 10 minutos</span>
+    </div>
+  </div>
+  <h2 class="chapter-title">Introducción<br>El Puente de Datos</h2>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+    <h3 class="section-title">¿Por qué HTML en un Bootcamp de IA?</h3>
+
+    <p>
+      A menudo, quienes se enfocan en la Inteligencia Artificial pueden ver el
+      desarrollo web como una disciplina ajena, casi periférica. Sin embargo, este
+      módulo establece una conexión vital: <strong>el desarrollo web es la interfaz
+      donde los datos se presentan y se recolectan.</strong>
+    </p>
+
+    <p>
+      Comprender cómo funciona la estructura de la web permite al especialista en IA
+      realizar tareas de <em>web scraping</em>, limpieza de datos y visualización de
+      resultados de modelos con mucha mayor eficacia. No se trata de convertirse en
+      desarrollador frontend: se trata de dominar el lenguaje en el que hablan los datos
+      en la red.
+    </p>
+
+    <div class="callout">
+      <p class="callout-label">Idea Central</p>
+      <p>
+        Todo modelo de IA consume datos. Gran parte de esos datos viven en la web,
+        estructurados en HTML. Quien entiende HTML, entiende de dónde vienen
+        los datos <strong>antes</strong> de que lleguen al pipeline.
+      </p>
+    </div>
+
+    <div class="objective">
+      Objetivo: comprender la utilidad transversal del desarrollo web para la automatización y gestión de datos en proyectos de IA
+    </div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════ CAPÍTULO 2 -->
+<article class="chapter reveal" id="cap2">
+  <div class="chapter-meta">
+    <span class="chapter-num">II</span>
+    <div class="chapter-label-group">
+      <span class="chapter-label">Capítulo Dos</span>
+      <span class="chapter-timing">⏱ 40 minutos</span>
+    </div>
+  </div>
+  <h2 class="chapter-title">El Esqueleto<br>HTML y la Anatomía del DOM</h2>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+    <p>
+      Para construir sobre la web, primero debemos conocer su estructura ósea.
+      Antes de cualquier estilo, cualquier lógica o cualquier modelo, existe un
+      árbol de elementos que define lo que hay en una página y cómo se relacionan entre sí.
+    </p>
+
+    <h3 class="section-title">El DOM — Document Object Model</h3>
+
+    <p>
+      El DOM es la representación estructurada del documento HTML. No es el código
+      fuente tal como fue escrito; es el árbol vivo que el navegador construye a partir
+      de ese código. Aprender a navegarlo es fundamental para extraer información
+      específica de cualquier sitio web.
+    </p>
+
+    <p>
+      Cada etiqueta HTML se convierte en un <em>nodo</em>. Cada nodo puede tener
+      hijos, padres y hermanos. Esta jerarquía —conocida como árbol del DOM—
+      es la misma que usan herramientas como BeautifulSoup, Selenium o Playwright
+      para automatizar la extracción de datos.
+    </p>
+
+    <div class="callout">
+      <p class="callout-label">Conexión con IA</p>
+      <p>
+        Cuando escribes <strong>soup.find('div', class_='precio')</strong> en Python,
+        estás navegando exactamente este árbol. Entender el DOM en el navegador
+        te enseña a escribir mejores selectores en tus scrapers.
+      </p>
+    </div>
+
+    <div class="practice">
+      <p>
+        <strong>Práctica:</strong> Uso del Inspector de Elementos. Aprenderemos a explorar la
+        jerarquía de una página en tiempo real, identificando etiquetas, clases e IDs.
+        Esta es la base técnica para cualquier proyecto de automatización o análisis web.
+        Abriremos una página real, inspeccionaremos su estructura y localizaremos
+        tres elementos distintos usando solo el árbol del DOM.
+      </p>
+    </div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════ INTERVALO -->
+<section class="interlude reveal" id="cap3">
+  <span class="interlude-icon">☕</span>
+  <h2 class="interlude-title">Intervalo de Recuperación</h2>
+  <p class="interlude-sub">
+    10 minutos de descanso — un tiempo esencial para consolidar los conceptos
+    básicos antes de pasar a la parte visual y de estilo.
+  </p>
+</section>
+
+<!-- ════════════════════════════════════════ CAPÍTULO 4 -->
+<article class="chapter reveal" id="cap4">
+  <div class="chapter-meta">
+    <span class="chapter-num">IV</span>
+    <div class="chapter-label-group">
+      <span class="chapter-label">Capítulo Cuatro</span>
+      <span class="chapter-timing">⏱ 20 minutos</span>
+    </div>
+  </div>
+  <h2 class="chapter-title">Los Mapas<br>CSS y el Arte de Seleccionar</h2>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+    <p>
+      Una vez comprendida la estructura, aprendemos a dar estilo y, más importante
+      aún, a realizar selecciones precisas. CSS es mucho más que colores y fuentes:
+      es un lenguaje de consulta visual sobre el árbol del DOM.
+    </p>
+
+    <h3 class="section-title">La Importancia del Selector</h3>
+
+    <p>
+      CSS no solo sirve para que la web se vea bien; su sintaxis de selectores
+      es la base para apuntar a elementos específicos en los datos.
+      <strong>Si puedes seleccionar un elemento con CSS, puedes extraerlo con un script.</strong>
+    </p>
+
+    <p>
+      Los selectores de CSS —por clase, por ID, por atributo, por posición relativa—
+      son los mismos mecanismos que usa BeautifulSoup con <em>select()</em> o
+      que usa Playwright con <em>page.locator()</em>. Aprender CSS es, en el
+      fondo, aprender a describir patrones dentro de datos estructurados.
+    </p>
+
+    <div class="callout">
+      <p class="callout-label">Principio Clave</p>
+      <p>
+        Los datos en la web rara vez vienen limpios. Vienen mezclados con
+        publicidad, menús y decoración. Los selectores CSS te permiten
+        <strong>ignorar el ruido y apuntar exactamente a la señal.</strong>
+      </p>
+    </div>
+
+    <div class="practice">
+      <p>
+        <strong>Práctica:</strong> Selección de elementos por patrones visuales.
+        Identificaremos cómo los estilos visuales nos ayudan a encontrar datos
+        estructurados dentro de una página desordenada. Usaremos el inspector
+        para copiar selectores CSS y probaremos cuántos elementos coinciden
+        con cada patrón antes de escribir una sola línea de Python.
+      </p>
+    </div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════ CAPÍTULO 5 -->
+<article class="chapter reveal" id="cap5">
+  <div class="chapter-meta">
+    <span class="chapter-num">V</span>
+    <div class="chapter-label-group">
+      <span class="chapter-label">Capítulo Cinco</span>
+      <span class="chapter-timing">⏱ 30 minutos</span>
+    </div>
+  </div>
+  <h2 class="chapter-title">Laboratorio Práctico<br>Trabajamos en VS Code</h2>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+    <p>
+      Todo conocimiento teórico encuentra su verdadero valor en la aplicación.
+      Este capítulo es el cierre del circuito: tomamos lo aprendido sobre
+      estructura y selectores y lo materializamos en un entorno real de trabajo.
+    </p>
+
+    <h3 class="section-title">Maquetación de un Reporte</h3>
+
+    <p>
+      El objetivo es construir desde cero una estructura de reporte en VS Code —
+      el entorno de trabajo estándar del desarrollador— aplicando una
+      estructura HTML limpia y dándole forma para presentar los resultados
+      de un proyecto o análisis de forma profesional.
+    </p>
+
+    <p>
+      Este tipo de reporte no es solo un ejercicio académico: es exactamente
+      el formato en que se comunican los hallazgos de un modelo de IA a
+      stakeholders no técnicos. Saber construirlo manualmente da la base
+      para generarlo también de forma programática.
+    </p>
+
+    <div class="callout">
+      <p class="callout-label">Cierre del Módulo</p>
+      <p>
+        Al terminar este laboratorio habrás creado un documento web completo:
+        estructura semántica, estilos coherentes y contenido real.
+        Las mismas habilidades que usaste para construirlo te servirán
+        para <strong>leer, extraer y analizar</strong> cualquier documento
+        de la web con Python.
+      </p>
+    </div>
+
+    <div class="practice">
+      <p>
+        <strong>Práctica:</strong> Maquetación integral de un reporte técnico
+        utilizando las mejores prácticas de VS Code y estructuración de documentos.
+        Trabajaremos con Emmet para agilizar la escritura de HTML, organizaremos
+        el proyecto en carpetas y produciremos un reporte que podría usarse
+        directamente en un portfolio profesional.
+      </p>
+    </div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════ COLOPHON -->
+<footer class="colophon">
+  <p>
+    <span>Hoja de Ruta</span> · Desarrollo Web para IA<br>
+    Módulo de formación técnica · Bootcamp IA
+  </p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Smooth scroll for TOC links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
