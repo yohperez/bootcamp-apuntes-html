@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hoja de Ruta — Desarrollo Web para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1208;
+  --paper: #f5f0e8;
+  --cream: #ede6d3;
+  --accent: #b5451b;
+  --gold: #c9983a;
+  --mid: #6b5c45;
+  --light: #d4c9b0;
+  --dark: #2b1f0e;
+  --code-bg: #1e1612;
+  --code-green: #7ec894;
+  --code-blue: #79b8ff;
+  --code-orange: #ffab70;
+  --code-pink: #f97583;
+  --code-gray: #8b949e;
+  --code-yellow: #e3b341;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background-color:var(--paper); color:var(--ink); font-family:'Source Serif 4',Georgia,serif; font-size:18px; line-height:1.8; overflow-x:hidden; }
+body::before { content:''; position:fixed; inset:0; pointer-events:none; z-index:999; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); opacity:0.35; mix-blend-mode:multiply; }
+
+/* FRONTISPIECE */
+.frontispiece { min-height:100vh; background-color:var(--dark); background-image:radial-gradient(ellipse 80% 60% at 50% 40%,#3d2a10 0%,transparent 70%),repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,255,255,0.015) 40px,rgba(255,255,255,0.015) 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,0.015) 40px,rgba(255,255,255,0.015) 41px); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 40px; position:relative; overflow:hidden; }
+.frontispiece::after { content:''; position:absolute; bottom:0; left:0; right:0; height:120px; background:linear-gradient(to bottom,transparent,var(--paper)); }
+.fp-ornament { color:var(--gold); font-size:2.4rem; letter-spacing:0.5rem; margin-bottom:2rem; opacity:0.7; animation:fadeDown 1s ease both; }
+.fp-series { font-family:'JetBrains Mono',monospace; font-size:0.75rem; letter-spacing:0.4rem; text-transform:uppercase; color:var(--gold); opacity:0.6; margin-bottom:1.5rem; animation:fadeDown 1s 0.1s ease both; }
+.fp-title { font-family:'Playfair Display',serif; font-size:clamp(3rem,8vw,6.5rem); font-weight:900; color:var(--paper); text-align:center; line-height:1.05; animation:fadeDown 1s 0.2s ease both; }
+.fp-title em { font-style:italic; color:var(--gold); display:block; }
+.fp-rule { width:80px; height:2px; background:var(--gold); margin:2.5rem auto; animation:expand 1s 0.4s ease both; transform-origin:center; }
+.fp-subtitle { font-size:1.1rem; color:rgba(245,240,232,0.65); text-align:center; font-style:italic; max-width:480px; animation:fadeDown 1s 0.5s ease both; }
+.fp-toc-label { margin-top:4rem; font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.35rem; color:var(--gold); opacity:0.5; text-transform:uppercase; animation:fadeDown 1s 0.6s ease both; }
+
+/* TOC */
+.toc { background:var(--cream); border-top:4px solid var(--accent); padding:80px clamp(24px,8vw,140px); }
+.toc-title { font-family:'Playfair Display',serif; font-size:0.8rem; letter-spacing:0.4rem; text-transform:uppercase; color:var(--mid); margin-bottom:3rem; }
+.toc-list { list-style:none; border-top:1px solid var(--light); }
+.toc-list li { border-bottom:1px solid var(--light); }
+.toc-list a { display:flex; align-items:baseline; gap:1rem; padding:1.1rem 0; text-decoration:none; color:var(--ink); transition:color 0.2s; }
+.toc-list a:hover { color:var(--accent); }
+.toc-num { font-family:'Playfair Display',serif; font-size:0.75rem; color:var(--accent); min-width:2.5rem; font-style:italic; }
+.toc-name { flex:1; font-size:1.05rem; }
+.toc-time { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--mid); letter-spacing:0.1rem; }
+
+/* CHAPTER */
+.chapter { padding:100px clamp(24px,8vw,140px) 80px; position:relative; }
+.chapter:nth-child(even) { background:var(--cream); }
+.chapter-meta { display:flex; align-items:center; gap:1.5rem; margin-bottom:2.5rem; }
+.chapter-num { font-family:'Playfair Display',serif; font-size:5rem; font-weight:900; font-style:italic; color:var(--light); line-height:1; user-select:none; }
+.chapter-label-group { display:flex; flex-direction:column; gap:0.3rem; }
+.chapter-label { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:0.4rem; text-transform:uppercase; color:var(--accent); }
+.chapter-timing { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--mid); background:var(--light); padding:2px 10px; border-radius:2px; display:inline-block; }
+.chapter-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:700; line-height:1.15; margin-bottom:2rem; max-width:700px; }
+.chapter-rule { width:40px; height:3px; background:var(--accent); margin-bottom:2.5rem; }
+.chapter-body { max-width:720px; font-size:1.05rem; color:#2e2314; }
+.chapter-body p { margin-bottom:1.4em; }
+.chapter-body strong { color:var(--accent); font-weight:600; }
+.chapter-body em { font-style:italic; color:var(--mid); }
+.section-title { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; font-style:italic; color:var(--dark); margin:2.8rem 0 1rem; padding-left:1.2rem; border-left:3px solid var(--gold); }
+
+/* CALLOUT */
+.callout { background:var(--dark); color:var(--paper); padding:1.6rem 2rem; margin:2.5rem 0; border-left:4px solid var(--gold); max-width:680px; }
+.callout-label { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:0.35rem; text-transform:uppercase; color:var(--gold); margin-bottom:0.7rem; }
+.callout p { font-size:0.97rem; line-height:1.7; color:rgba(245,240,232,0.85); margin:0; }
+.callout strong { color:var(--gold); font-weight:600; }
+
+/* OBJECTIVE */
+.objective { display:inline-flex; align-items:center; gap:0.6rem; background:var(--accent); color:white; padding:0.5rem 1.2rem; font-size:0.85rem; font-family:'JetBrains Mono',monospace; letter-spacing:0.05rem; margin:1.5rem 0; }
+.objective::before { content:'⊙'; font-size:1rem; }
+
+/* PRACTICE */
+.practice { border:1.5px solid var(--gold); padding:1.4rem 1.8rem; margin:2rem 0; max-width:680px; position:relative; }
+.practice::before { content:'PRÁCTICA'; position:absolute; top:-0.6rem; left:1.2rem; background:var(--paper); padding:0 0.6rem; font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.3rem; color:var(--gold); }
+.chapter:nth-child(even) .practice::before { background:var(--cream); }
+.practice p { margin:0; font-size:0.97rem; color:var(--ink); }
+.practice code { font-family:'JetBrains Mono',monospace; font-size:0.85rem; background:var(--light); padding:1px 5px; border-radius:2px; }
+
+/* CODE BLOCK */
+.code-block { background:var(--code-bg); border-radius:4px; margin:2rem 0; max-width:720px; overflow:hidden; box-shadow:0 6px 30px rgba(0,0,0,0.25); }
+.code-header { background:#13100d; padding:0.6rem 1.2rem; display:flex; align-items:center; gap:0.5rem; border-bottom:1px solid #2e2520; }
+.code-dot { width:11px; height:11px; border-radius:50%; }
+.code-dot.red{background:#ff5f57;} .code-dot.amber{background:#febc2e;} .code-dot.green{background:#28c840;}
+.code-filename { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:#665c52; margin-left:auto; }
+.code-body { padding:1.4rem 1.8rem; overflow-x:auto; }
+.code-body pre { font-family:'JetBrains Mono',monospace; font-size:0.82rem; line-height:1.75; color:#cdd5dd; white-space:pre; }
+.ck{color:var(--code-pink);} .cf{color:var(--code-blue);} .cs{color:var(--code-green);}
+.cn{color:var(--code-orange);} .cc{color:var(--code-gray);} .cv{color:var(--code-yellow);} .ct{color:#e1e4e8;}
+
+/* SVG FIGURE */
+.svg-figure { margin:2.5rem 0; max-width:720px; background:var(--dark); border-radius:4px; padding:2rem; display:flex; flex-direction:column; align-items:center; gap:1rem; }
+.svg-caption { font-family:'JetBrains Mono',monospace; font-size:0.68rem; letter-spacing:0.2rem; color:var(--gold); opacity:0.7; text-align:center; text-transform:uppercase; }
+.chapter:nth-child(even) .svg-figure { background:#1a1610; }
+
+/* INTERLUDE */
+.interlude { background:linear-gradient(135deg,#c9983a22 0%,transparent 60%),var(--cream); border-top:2px dashed var(--gold); border-bottom:2px dashed var(--gold); padding:60px clamp(24px,8vw,140px); text-align:center; }
+.interlude-icon { font-size:3rem; display:block; margin-bottom:1rem; }
+.interlude-title { font-family:'Playfair Display',serif; font-size:1.8rem; font-style:italic; color:var(--dark); margin-bottom:0.5rem; }
+.interlude-sub { font-size:0.9rem; color:var(--mid); font-style:italic; }
+
+/* COLOPHON */
+.colophon { background:var(--dark); color:rgba(245,240,232,0.5); text-align:center; padding:60px 40px; font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.1rem; }
+.colophon span { color:var(--gold); opacity:0.7; }
+
+/* ANIMATIONS */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes expand{from{transform:scaleX(0);opacity:0;}to{transform:scaleX(1);opacity:1;}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+@media(max-width:600px){.chapter-num{font-size:3.5rem;}.toc{padding:60px 24px;}.code-body{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<!-- FRONTISPIECE -->
+<section class="frontispiece">
+  <div class="fp-ornament">&#10022; &#10022; &#10022;</div>
+  <p class="fp-series">Bootcamp IA &middot; Módulo Web</p>
+  <h1 class="fp-title">Hoja de<br><em>Ruta</em></h1>
+  <div class="fp-rule"></div>
+  <p class="fp-subtitle">Guía estructurada de formación técnica en desarrollo web para especialistas en Inteligencia Artificial</p>
+  <p class="fp-toc-label">&#9660; Tabla de Contenidos</p>
+</section>
+
+<!-- TOC -->
+<nav class="toc">
+  <p class="toc-title">Índice del Libro</p>
+  <ul class="toc-list">
+    <li><a href="#cap1"><span class="toc-num">I</span><span class="toc-name">Introducción — El Puente de Datos</span><span class="toc-time">10 min</span></a></li>
+    <li><a href="#cap2"><span class="toc-num">II</span><span class="toc-name">El Esqueleto — HTML y la Anatomía del DOM</span><span class="toc-time">40 min</span></a></li>
+    <li><a href="#cap3"><span class="toc-num">III</span><span class="toc-name">Intervalo de Recuperación</span><span class="toc-time">10 min</span></a></li>
+    <li><a href="#cap4"><span class="toc-num">IV</span><span class="toc-name">Los Mapas — CSS y el Arte de Seleccionar</span><span class="toc-time">20 min</span></a></li>
+    <li><a href="#cap5"><span class="toc-num">V</span><span class="toc-name">Laboratorio Práctico — Trabajamos en VS Code</span><span class="toc-time">30 min</span></a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════ CAPÍTULO I -->
+<article class="chapter reveal" id="cap1">
+  <div class="chapter-meta">
+    <span class="chapter-num">I</span>
+    <div class="chapter-label-group">
+      <span class="chapter-label">Capítulo Uno</span>
+      <span class="chapter-timing">&#9201; 10 minutos</span>
+    </div>
+  </div>
+  <h2 class="chapter-title">Introducción<br>El Puente de Datos</h2>
+  <div class="chapter-rule"></div>
+  <div class="chapter-body">
+    <h3 class="section-title">¿Por qué HTML en un Bootcamp de IA?</h3>
+    <p>A menudo, quienes se enfocan en la Inteligencia Artificial pueden ver el desarrollo web como una disciplina ajena. Sin embargo, este módulo establece la conexión vital: <strong>el desarrollo web es la interfaz donde los datos se presentan y se recolectan.</strong></p>
+    <p>Comprender cómo funciona la estructura de la web permite al especialista en IA realizar tareas de <em>web scraping</em>, limpieza de datos y visualización de resultados de modelos con mucha mayor eficacia.</p>
+
+    <!-- SVG 1: Pipeline IA -->
+    <div class="svg-figure reveal">
+      <svg width="100%" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#c9983a"/></marker>
+        </defs>
+        <rect x="10"  y="50" width="120" height="60" rx="4" fill="#3d2a10" stroke="#c9983a" stroke-width="1.5"/>
+        <rect x="180" y="50" width="120" height="60" rx="4" fill="#3d2a10" stroke="#c9983a" stroke-width="1.5"/>
+        <rect x="350" y="50" width="120" height="60" rx="4" fill="#3d2a10" stroke="#c9983a" stroke-width="1.5"/>
+        <rect x="510" y="50" width="120" height="60" rx="4" fill="#b5451b" stroke="#c9983a" stroke-width="1.5"/>
+        <line x1="132" y1="80" x2="178" y2="80" stroke="#c9983a" stroke-width="1.5" marker-end="url(#a1)"/>
+        <line x1="302" y1="80" x2="348" y2="80" stroke="#c9983a" stroke-width="1.5" marker-end="url(#a1)"/>
+        <line x1="472" y1="80" x2="508" y2="80" stroke="#c9983a" stroke-width="1.5" marker-end="url(#a1)"/>
+        <text x="70"  y="76" text-anchor="middle" fill="#f5f0e8" font-family="JetBrains Mono" font-size="11">Página</text>
+        <text x="70"  y="92" text-anchor="middle" fill="#c9983a" font-family="JetBrains Mono" font-size="11">HTML</text>
+        <text x="240" y="76" text-anchor="middle" fill="#f5f0e8" font-family="JetBrains Mono" font-size="11">Scraping</text>
+        <text x="240" y="92" text-anchor="middle" fill="#c9983a" font-family="JetBrains Mono" font-size="11">Python</text>
+        <text x="410" y="76" text-anchor="middle" fill="#f5f0e8" font-family="JetBrains Mono" font-size="11">Limpieza</text>
+        <text x="410" y="92" text-anchor="middle" fill="#c9983a" font-family="JetBrains Mono" font-size="11">Pandas</text>
+        <text x="570" y="76" text-anchor="middle" fill="#fff"    font-family="JetBrains Mono" font-size="11">Modelo</text>
+        <text x="570" y="92" text-anchor="middle" fill="#ffd080" font-family="JetBrains Mono" font-size="11">IA / ML</text>
+        <circle cx="70"  cy="30" r="11" fill="#c9983a"/><text x="70"  y="35" text-anchor="middle" fill="#1a1208" font-family="JetBrains Mono" font-size="11" font-weight="700">1</text>
+        <circle cx="240" cy="30" r="11" fill="#c9983a"/><text x="240" y="35" text-anchor="middle" fill="#1a1208" font-family="JetBrains Mono" font-size="11" font-weight="700">2</text>
+        <circle cx="410" cy="30" r="11" fill="#c9983a"/><text x="410" y="35" text-anchor="middle" fill="#1a1208" font-family="JetBrains Mono" font-size="11" font-weight="700">3</text>
+        <circle cx="570" cy="30" r="11" fill="#b5451b"/><text x="570" y="35" text-anchor="middle" fill="#fff"    font-family="JetBrains Mono" font-size="11" font-weight="700">4</text>
+      </svg>
+      <p class="svg-caption">Pipeline: del HTML de la web al modelo de IA</p>
+    </div>
+
+    <div class="callout">
+      <p class="callout-label">Idea Central</p>
+      <p>Todo modelo de IA consume datos. Gran parte de esos datos viven en la web, estructurados en HTML. Quien entiende HTML, entiende de dónde vienen los datos <strong>antes</strong> de que lleguen al pipeline.</p>
+    </div>
+    <div class="objective">Objetivo: comprender la utilidad transversal del desarrollo web para automatización y gestión de datos en IA</div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════ CAPÍTULO II -->
+<article class="chapter reveal" id="cap2">
+  <div class="chapter-meta">
+    <span class="chapter-num">II</span>
+    <div class="chapter-label-group">
+      <span class="chapter-label">Capítulo Dos</span>
+      <span class="chapter-timing">&#9201; 40 minutos</span>
+    </div>
+  </div>
+  <h2 class="chapter-title">El Esqueleto<br>HTML y la Anatomía del DOM</h2>
+  <div class="chapter-rule"></div>
+  <div class="chapter-body">
+    <p>Para construir sobre la web, primero debemos conocer su estructura ósea. Antes de cualquier estilo o lógica, existe un árbol de elementos que define lo que hay en una página y cómo se relacionan entre sí.</p>
+
+    <h3 class="section-title">El DOM — Document Object Model</h3>
+    <p>El DOM es la representación estructurada del documento HTML. Cada etiqueta se convierte en un <em>nodo</em> con hijos, padres y hermanos. Esta jerarquía es exactamente la que usan BeautifulSoup, Selenium y Playwright.</p>
+
+    <!-- SVG 2: Árbol DOM -->
+    <div class="svg-figure reveal">
+      <svg width="100%" viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+        <line x1="280" y1="44"  x2="140" y2="90"  stroke="#c9983a" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <line x1="280" y1="44"  x2="420" y2="90"  stroke="#c9983a" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <line x1="140" y1="112" x2="80"  y2="158" stroke="#7ec894" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <line x1="140" y1="112" x2="200" y2="158" stroke="#7ec894" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <line x1="420" y1="112" x2="360" y2="158" stroke="#7ec894" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <line x1="420" y1="112" x2="480" y2="158" stroke="#7ec894" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <line x1="200" y1="180" x2="200" y2="204" stroke="#79b8ff" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="360" y1="180" x2="310" y2="204" stroke="#79b8ff" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="360" y1="180" x2="410" y2="204" stroke="#79b8ff" stroke-width="1" stroke-dasharray="3,3"/>
+        <rect x="240" y="20"  width="80" height="26" rx="4" fill="#3d2a10" stroke="#c9983a" stroke-width="1.5"/>
+        <text x="280" y="38"  text-anchor="middle" fill="#c9983a"  font-family="JetBrains Mono" font-size="12">&lt;html&gt;</text>
+        <rect x="100" y="90"  width="80" height="26" rx="4" fill="#2b1f0e" stroke="#7ec894" stroke-width="1.3"/>
+        <text x="140" y="108" text-anchor="middle" fill="#7ec894" font-family="JetBrains Mono" font-size="12">&lt;head&gt;</text>
+        <rect x="380" y="90"  width="80" height="26" rx="4" fill="#2b1f0e" stroke="#7ec894" stroke-width="1.3"/>
+        <text x="420" y="108" text-anchor="middle" fill="#7ec894" font-family="JetBrains Mono" font-size="12">&lt;body&gt;</text>
+        <rect x="42"  y="158" width="76" height="24" rx="3" fill="#1e1612" stroke="#665c52"/>
+        <text x="80"  y="175" text-anchor="middle" fill="#8b949e"  font-family="JetBrains Mono" font-size="11">&lt;title&gt;</text>
+        <rect x="162" y="158" width="76" height="24" rx="3" fill="#1e1612" stroke="#79b8ff" stroke-width="1.3"/>
+        <text x="200" y="175" text-anchor="middle" fill="#79b8ff"  font-family="JetBrains Mono" font-size="11">&lt;div&gt;</text>
+        <rect x="322" y="158" width="76" height="24" rx="3" fill="#1e1612" stroke="#79b8ff" stroke-width="1.3"/>
+        <text x="360" y="175" text-anchor="middle" fill="#79b8ff"  font-family="JetBrains Mono" font-size="11">&lt;ul&gt;</text>
+        <rect x="442" y="158" width="76" height="24" rx="3" fill="#1e1612" stroke="#665c52"/>
+        <text x="480" y="175" text-anchor="middle" fill="#8b949e"  font-family="JetBrains Mono" font-size="11">&lt;footer&gt;</text>
+        <rect x="168" y="202" width="64" height="20" rx="3" fill="#1a1208" stroke="#f97583" stroke-width="1.2"/>
+        <text x="200" y="217" text-anchor="middle" fill="#f97583"  font-family="JetBrains Mono" font-size="10">&lt;p.precio&gt;</text>
+        <rect x="278" y="202" width="64" height="20" rx="3" fill="#1a1208" stroke="#f97583" stroke-width="1.2"/>
+        <text x="310" y="217" text-anchor="middle" fill="#f97583"  font-family="JetBrains Mono" font-size="10">&lt;li#id1&gt;</text>
+        <rect x="378" y="202" width="64" height="20" rx="3" fill="#1a1208" stroke="#f97583" stroke-width="1.2"/>
+        <text x="410" y="217" text-anchor="middle" fill="#f97583"  font-family="JetBrains Mono" font-size="10">&lt;li#id2&gt;</text>
+      </svg>
+      <p class="svg-caption">Árbol jerárquico del DOM — padres, hijos y hermanos</p>
+    </div>
+
+    <h3 class="section-title">Ejemplo: estructura HTML5 semántica de un reporte</h3>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-dot red"></span><span class="code-dot amber"></span><span class="code-dot green"></span><span class="code-filename">reporte.html</span></div>
+      <div class="code-body"><pre><span class="cc">&lt;!-- Estructura HTML5 semántica --&gt;</span>
+<span class="ck">&lt;!DOCTYPE</span> <span class="cn">html</span><span class="ck">&gt;</span>
+<span class="ck">&lt;html</span> <span class="cn">lang</span>=<span class="cs">"es"</span><span class="ck">&gt;</span>
+<span class="ck">&lt;head&gt;</span>
+  <span class="ck">&lt;meta</span> <span class="cn">charset</span>=<span class="cs">"UTF-8"</span><span class="ck">&gt;</span>
+  <span class="ck">&lt;title&gt;</span><span class="ct">Reporte de Análisis — Dataset Amazon</span><span class="ck">&lt;/title&gt;</span>
+<span class="ck">&lt;/head&gt;</span>
+<span class="ck">&lt;body&gt;</span>
+
+  <span class="ck">&lt;header&gt;</span>
+    <span class="ck">&lt;h1&gt;</span><span class="ct">Análisis de Precios — Dataset Amazon</span><span class="ck">&lt;/h1&gt;</span>
+    <span class="ck">&lt;p</span> <span class="cn">class</span>=<span class="cs">"fecha"</span><span class="ck">&gt;</span><span class="ct">Generado: 2025-07-01</span><span class="ck">&lt;/p&gt;</span>
+  <span class="ck">&lt;/header&gt;</span>
+
+  <span class="ck">&lt;main&gt;</span>
+    <span class="ck">&lt;section</span> <span class="cn">id</span>=<span class="cs">"resumen"</span><span class="ck">&gt;</span>
+      <span class="ck">&lt;h2&gt;</span><span class="ct">Resumen Ejecutivo</span><span class="ck">&lt;/h2&gt;</span>
+      <span class="ck">&lt;p&gt;</span><span class="ct">Se analizaron </span><span class="ck">&lt;strong&gt;</span><span class="ct">1.240 productos</span><span class="ck">&lt;/strong&gt;</span><span class="ct"> en 8 categorías.</span><span class="ck">&lt;/p&gt;</span>
+    <span class="ck">&lt;/section&gt;</span>
+
+    <span class="ck">&lt;section</span> <span class="cn">id</span>=<span class="cs">"tabla"</span><span class="ck">&gt;</span>
+      <span class="ck">&lt;h2&gt;</span><span class="ct">Top 3 Categorías</span><span class="ck">&lt;/h2&gt;</span>
+      <span class="ck">&lt;table&gt;</span>
+        <span class="ck">&lt;tr&gt;&lt;th&gt;</span><span class="ct">Categoría</span><span class="ck">&lt;/th&gt;&lt;th&gt;</span><span class="ct">Precio medio</span><span class="ck">&lt;/th&gt;&lt;/tr&gt;</span>
+        <span class="ck">&lt;tr&gt;&lt;td&gt;</span><span class="ct">Electrónica</span><span class="ck">&lt;/td&gt;&lt;td&gt;</span><span class="ct">€ 142</span><span class="ck">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="ck">&lt;tr&gt;&lt;td&gt;</span><span class="ct">Hogar</span><span class="ck">&lt;/td&gt;&lt;td&gt;</span><span class="ct">€ 67</span><span class="ck">&lt;/td&gt;&lt;/tr&gt;</span>
+      <span class="ck">&lt;/table&gt;</span>
+    <span class="ck">&lt;/section&gt;</span>
+  <span class="ck">&lt;/main&gt;</span>
+
+  <span class="ck">&lt;footer&gt;</span>
+    <span class="ck">&lt;p&gt;</span><span class="ct">Bootcamp IA — 2025</span><span class="ck">&lt;/p&gt;</span>
+  <span class="ck">&lt;/footer&gt;</span>
+
+<span class="ck">&lt;/body&gt;&lt;/html&gt;</span></pre></div>
+    </div>
+
+    <h3 class="section-title">Ejemplo: extracción de datos con BeautifulSoup</h3>
+    <p>Una vez identificada la estructura en el inspector, la extracción en Python es directa y predecible:</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-dot red"></span><span class="code-dot amber"></span><span class="code-dot green"></span><span class="code-filename">scraper.py</span></div>
+      <div class="code-body"><pre><span class="ck">from</span> <span class="cf">bs4</span> <span class="ck">import</span> <span class="ct">BeautifulSoup</span>
+<span class="ck">import</span> <span class="cf">requests</span>
+
+<span class="cc"># 1. Descargar la página</span>
+<span class="cn">url</span> = <span class="cs">"https://books.toscrape.com"</span>
+<span class="cn">html</span> = <span class="cf">requests</span>.<span class="cf">get</span>(<span class="cn">url</span>).text
+
+<span class="cc"># 2. Parsear el DOM</span>
+<span class="cn">soup</span> = <span class="cf">BeautifulSoup</span>(<span class="cn">html</span>, <span class="cs">"html.parser"</span>)
+
+<span class="cc"># 3. Navegar el árbol DOM — igual que en el Inspector</span>
+<span class="cc">#    Inspector nos mostró: article.product_pod > h3 > a[title]</span>
+<span class="cn">libros</span> = <span class="cn">soup</span>.<span class="cf">find_all</span>(<span class="cs">"article"</span>, <span class="cn">class_</span>=<span class="cs">"product_pod"</span>)
+
+<span class="ck">for</span> <span class="cn">libro</span> <span class="ck">in</span> <span class="cn">libros</span>[:3]:
+    <span class="cn">titulo</span> = <span class="cn">libro</span>.<span class="cf">find</span>(<span class="cs">"h3"</span>).<span class="cf">find</span>(<span class="cs">"a"</span>)[<span class="cs">"title"</span>]
+    <span class="cn">precio</span> = <span class="cn">libro</span>.<span class="cf">find</span>(<span class="cs">"p"</span>, <span class="cn">class_</span>=<span class="cs">"price_color"</span>).text
+    <span class="cn">rating</span> = <span class="cn">libro</span>.<span class="cf">find</span>(<span class="cs">"p"</span>)[<span class="cs">"class"</span>][1]  <span class="cc"># "Three", "Five"...</span>
+    <span class="cf">print</span>(<span class="cs">f"</span><span class="cv">{titulo[:30]}</span><span class="cs"> | </span><span class="cv">{precio}</span><span class="cs"> | </span><span class="cv">{rating}</span><span class="cs"> estrellas"</span>)
+
+<span class="cc"># Salida esperada:</span>
+<span class="cc"># A Light in the Attic      | £51.77 | Three estrellas</span>
+<span class="cc"># Tipping the Velvet        | £53.74 | One estrellas</span>
+<span class="cc"># Soumission                | £50.10 | One estrellas</span></pre></div>
+    </div>
+
+    <!-- SVG 3: Inspector workflow -->
+    <div class="svg-figure reveal">
+      <svg width="100%" viewBox="0 0 580 130" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#7ec894"/></marker></defs>
+        <rect x="10"  y="40" width="120" height="50" rx="4" fill="#2b1f0e" stroke="#7ec894" stroke-width="1.3"/>
+        <rect x="180" y="40" width="120" height="50" rx="4" fill="#2b1f0e" stroke="#7ec894" stroke-width="1.3"/>
+        <rect x="350" y="40" width="120" height="50" rx="4" fill="#2b1f0e" stroke="#7ec894" stroke-width="1.3"/>
+        <rect x="474" y="40" width="96"  height="50" rx="4" fill="#b5451b" stroke="#c9983a" stroke-width="1.3"/>
+        <line x1="132" y1="65" x2="178" y2="65" stroke="#7ec894" stroke-width="1.5" marker-end="url(#a2)"/>
+        <line x1="302" y1="65" x2="348" y2="65" stroke="#7ec894" stroke-width="1.5" marker-end="url(#a2)"/>
+        <line x1="472" y1="65" x2="475" y2="65" stroke="#7ec894" stroke-width="1.5"/>
+        <text x="70"  y="61" text-anchor="middle" fill="#f5f0e8" font-family="JetBrains Mono" font-size="10">Abrir página</text>
+        <text x="70"  y="77" text-anchor="middle" fill="#7ec894" font-family="JetBrains Mono" font-size="10">en Chrome</text>
+        <text x="240" y="61" text-anchor="middle" fill="#f5f0e8" font-family="JetBrains Mono" font-size="10">Pulsar F12</text>
+        <text x="240" y="77" text-anchor="middle" fill="#7ec894" font-family="JetBrains Mono" font-size="10">Elements tab</text>
+        <text x="410" y="61" text-anchor="middle" fill="#f5f0e8" font-family="JetBrains Mono" font-size="10">Hover sobre</text>
+        <text x="410" y="77" text-anchor="middle" fill="#7ec894" font-family="JetBrains Mono" font-size="10">el elemento</text>
+        <text x="522" y="61" text-anchor="middle" fill="#fff"    font-family="JetBrains Mono" font-size="10">Copiar</text>
+        <text x="522" y="77" text-anchor="middle" fill="#ffd080" font-family="JetBrains Mono" font-size="10">selector</text>
+      </svg>
+      <p class="svg-caption">Flujo de trabajo: Inspector de elementos &#8594; selector CSS &#8594; Python</p>
+    </div>
+
+    <div class="callout">
+      <p class="callout-label">Conexión con IA — BeautifulSoup</p>
+      <p>Cuando escribes <strong>soup.find('article', class_='product_pod')</strong> en Python, estás navegando exactamente el mismo árbol que ves en el inspector. Entender el DOM en el navegador te enseña a escribir mejores selectores en tus scrapers.</p>
+    </div>
+
+    <div class="practice">
+      <p><strong>Práctica:</strong> Abre <code>books.toscrape.com</code> (sitio diseñado para practicar scraping). Usa el Inspector para identificar la etiqueta y clase que contiene el título y el precio de cada libro. Anótalos. Luego escribe el <code>soup.find_all()</code> correspondiente en un notebook de Colab.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════ INTERVALO -->
+<section class="interlude reveal" id="cap3">
+  <span class="interlude-icon">&#9749;</span>
+  <h2 class="interlude-title">Intervalo de Recuperación</h2>
+  <p class="interlude-sub">10 minutos — tiempo esencial para consolidar los conceptos básicos antes de pasar a la parte visual y de estilo.</p>
+</section>
+
+<!-- ═══════════════════════════════════════ CAPÍTULO IV -->
+<article class="chapter reveal" id="cap4">
+  <div class="chapter-meta">
+    <span class="chapter-num">IV</span>
+    <div class="chapter-label-group">
+      <span class="chapter-label">Capítulo Cuatro</span>
+      <span class="chapter-timing">&#9201; 20 minutos</span>
+    </div>
+  </div>
+  <h2 class="chapter-title">Los Mapas<br>CSS y el Arte de Seleccionar</h2>
+  <div class="chapter-rule"></div>
+  <div class="chapter-body">
+    <p>Una vez comprendida la estructura, aprendemos a dar estilo y, más importante aún, a realizar selecciones precisas. CSS es mucho más que colores y fuentes: es un lenguaje de consulta visual sobre el árbol del DOM.</p>
+
+    <h3 class="section-title">Anatomía de una regla CSS</h3>
+
+    <!-- SVG 4: Anatomía selector CSS -->
+    <div class="svg-figure reveal">
+      <svg width="100%" viewBox="0 0 560 210" xmlns="http://www.w3.org/2000/svg">
+        <rect x="30" y="16" width="500" height="174" rx="6" fill="#13100d" stroke="#2e2520"/>
+        <!-- selector -->
+        <text x="56"  y="58" font-family="JetBrains Mono" font-size="20" fill="#79b8ff">div</text>
+        <text x="90"  y="58" font-family="JetBrains Mono" font-size="20" fill="#f97583">.producto</text>
+        <text x="236" y="58" font-family="JetBrains Mono" font-size="20" fill="#e1e4e8"> {</text>
+        <!-- props -->
+        <text x="72"  y="88"  font-family="JetBrains Mono" font-size="15" fill="#ffab70">  background</text>
+        <text x="210" y="88"  font-family="JetBrains Mono" font-size="15" fill="#e1e4e8">:</text>
+        <text x="220" y="88"  font-family="JetBrains Mono" font-size="15" fill="#7ec894"> #fff</text>
+        <text x="258" y="88"  font-family="JetBrains Mono" font-size="15" fill="#8b949e">;</text>
+        <text x="72"  y="112" font-family="JetBrains Mono" font-size="15" fill="#ffab70">  border</text>
+        <text x="168" y="112" font-family="JetBrains Mono" font-size="15" fill="#e1e4e8">:</text>
+        <text x="178" y="112" font-family="JetBrains Mono" font-size="15" fill="#7ec894"> 1px solid #ddd</text>
+        <text x="354" y="112" font-family="JetBrains Mono" font-size="15" fill="#8b949e">;</text>
+        <text x="72"  y="136" font-family="JetBrains Mono" font-size="15" fill="#ffab70">  padding</text>
+        <text x="178" y="136" font-family="JetBrains Mono" font-size="15" fill="#e1e4e8">:</text>
+        <text x="188" y="136" font-family="JetBrains Mono" font-size="15" fill="#e3b341"> 1rem</text>
+        <text x="234" y="136" font-family="JetBrains Mono" font-size="15" fill="#8b949e">;</text>
+        <text x="56"  y="170" font-family="JetBrains Mono" font-size="20" fill="#e1e4e8">}</text>
+        <!-- annotations -->
+        <text x="380" y="58"  font-family="JetBrains Mono" font-size="10" fill="#79b8ff">&#8592; etiqueta</text>
+        <text x="380" y="74"  font-family="JetBrains Mono" font-size="10" fill="#f97583">&#8592; clase CSS</text>
+        <text x="380" y="90"  font-family="JetBrains Mono" font-size="10" fill="#ffab70">&#8592; propiedad</text>
+        <text x="380" y="106" font-family="JetBrains Mono" font-size="10" fill="#7ec894">&#8592; valor</text>
+      </svg>
+      <p class="svg-caption">Anatomía de una regla CSS — selector + propiedades + valores</p>
+    </div>
+
+    <h3 class="section-title">Los 5 selectores más útiles para scraping</h3>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-dot red"></span><span class="code-dot amber"></span><span class="code-dot green"></span><span class="code-filename">selectores.css &amp; equivalente Python</span></div>
+      <div class="code-body"><pre><span class="cc">/* ── 1. Por etiqueta ──────────────────────── */</span>
+<span class="ck">h2</span> { <span class="cn">color</span>: <span class="cv">navy</span>; }
+<span class="cn">soup</span>.<span class="cf">find_all</span>(<span class="cs">"h2"</span>)
+
+<span class="cc">/* ── 2. Por clase ─────────────────────────── */</span>
+<span class="ck">.</span><span class="cf">price_color</span> { <span class="cn">font-weight</span>: <span class="cv">bold</span>; }
+<span class="cn">soup</span>.<span class="cf">find_all</span>(<span class="cn">class_</span>=<span class="cs">"price_color"</span>)
+
+<span class="cc">/* ── 3. Por ID ────────────────────────────── */</span>
+<span class="ck">#</span><span class="cf">resumen</span> { <span class="cn">background</span>: <span class="cv">#f0f0f0</span>; }
+<span class="cn">soup</span>.<span class="cf">find</span>(<span class="cn">id</span>=<span class="cs">"resumen"</span>)
+
+<span class="cc">/* ── 4. Descendiente directo ──────────────── */</span>
+<span class="ck">ul</span> <span class="ck">&gt;</span> <span class="ck">li</span> { <span class="cn">list-style</span>: <span class="cv">none</span>; }
+<span class="cn">soup</span>.<span class="cf">select</span>(<span class="cs">"ul > li"</span>)
+
+<span class="cc">/* ── 5. Por atributo ──────────────────────── */</span>
+<span class="ck">a[</span><span class="cf">href</span><span class="ck">^=</span><span class="cs">"https"</span><span class="ck">]</span> { <span class="cn">color</span>: <span class="cv">green</span>; }
+<span class="cn">soup</span>.<span class="cf">select</span>(<span class="cs">'a[href^="https"]'</span>)</pre></div>
+    </div>
+
+    <h3 class="section-title">Ejemplo completo: extraer tabla de precios y convertir a DataFrame</h3>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-dot red"></span><span class="code-dot amber"></span><span class="code-dot green"></span><span class="code-filename">extraer_precios.py</span></div>
+      <div class="code-body"><pre><span class="ck">from</span> <span class="cf">bs4</span> <span class="ck">import</span> <span class="ct">BeautifulSoup</span>
+<span class="ck">import</span> <span class="cf">pandas</span> <span class="ck">as</span> <span class="ct">pd</span>
+<span class="ck">import</span> <span class="cf">requests</span>
+
+<span class="cn">html</span> = <span class="cf">requests</span>.<span class="cf">get</span>(<span class="cs">"https://books.toscrape.com"</span>).text
+<span class="cn">soup</span> = <span class="cf">BeautifulSoup</span>(<span class="cn">html</span>, <span class="cs">"html.parser"</span>)
+
+<span class="cc"># Selector CSS directo — copiado del inspector del navegador</span>
+<span class="cn">datos</span> = []
+<span class="ck">for</span> <span class="cn">item</span> <span class="ck">in</span> <span class="cn">soup</span>.<span class="cf">select</span>(<span class="cs">"ol.row &gt; li article.product_pod"</span>):
+    <span class="cn">datos</span>.<span class="cf">append</span>({
+        <span class="cs">"titulo"</span>:  <span class="cn">item</span>.<span class="cf">select_one</span>(<span class="cs">"h3 &gt; a"</span>)[<span class="cs">"title"</span>],
+        <span class="cs">"precio"</span>:  <span class="cn">item</span>.<span class="cf">select_one</span>(<span class="cs">".price_color"</span>).text.<span class="cf">strip</span>(),
+        <span class="cs">"rating"</span>:  <span class="cn">item</span>.<span class="cf">select_one</span>(<span class="cs">"p.star-rating"</span>)[<span class="cs">"class"</span>][1],
+        <span class="cs">"stock"</span>:   <span class="cn">item</span>.<span class="cf">select_one</span>(<span class="cs">".availability"</span>).text.<span class="cf">strip</span>()
+    })
+
+<span class="cc"># DataFrame listo para ML</span>
+<span class="cn">df</span> = <span class="cf">pd</span>.<span class="cf">DataFrame</span>(<span class="cn">datos</span>)
+<span class="cf">print</span>(<span class="cn">df</span>.<span class="cf">head</span>(<span class="cv">3</span>))
+
+<span class="cc">#    titulo                       precio  rating   stock</span>
+<span class="cc"># 0  A Light in the Attic         £51.77  Three    In stock</span>
+<span class="cc"># 1  Tipping the Velvet            £53.74  One      In stock</span>
+<span class="cc"># 2  Soumission                   £50.10  One      In stock</span></pre></div>
+    </div>
+
+    <!-- SVG 5: CSS señalando elementos en página simulada -->
+    <div class="svg-figure reveal">
+      <svg width="100%" viewBox="0 0 560 190" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="a3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#c9983a"/></marker></defs>
+        <!-- Página simulada -->
+        <rect x="20" y="20" width="220" height="160" rx="5" fill="#1a1610" stroke="#2e2520"/>
+        <text x="30" y="42" font-family="JetBrains Mono" font-size="9" fill="#665c52">books.toscrape.com</text>
+        <rect x="30" y="50"  width="200" height="22" rx="3" fill="#2b1f0e" stroke="#665c52"/>
+        <text x="40"  y="66" font-family="JetBrains Mono" font-size="10" fill="#8b949e">Navbar</text>
+        <!-- card destacada -->
+        <rect x="30" y="80"  width="200" height="50" rx="3" fill="#3d2a10" stroke="#c9983a" stroke-width="2"/>
+        <text x="40"  y="100" font-family="JetBrains Mono" font-size="10" fill="#f5f0e8">A Light in the Attic</text>
+        <text x="40"  y="118" font-family="JetBrains Mono" font-size="11" fill="#7ec894" font-weight="bold">£ 51.77</text>
+        <text x="160" y="118" font-family="JetBrains Mono" font-size="9"  fill="#e3b341">&#9733;&#9733;&#9733;</text>
+        <rect x="30" y="138" width="200" height="22" rx="3" fill="#2b1f0e" stroke="#665c52"/>
+        <text x="40"  y="154" font-family="JetBrains Mono" font-size="10" fill="#8b949e">Footer</text>
+        <!-- Flecha y selector -->
+        <line x1="282" y1="105" x2="234" y2="105" stroke="#c9983a" stroke-width="2" marker-end="url(#a3)"/>
+        <rect x="284" y="66" width="256" height="80" rx="4" fill="#13100d" stroke="#c9983a" stroke-width="1.5"/>
+        <text x="298" y="87"  font-family="JetBrains Mono" font-size="12" fill="#79b8ff">article</text>
+        <text x="360" y="87"  font-family="JetBrains Mono" font-size="12" fill="#f97583">.product_pod</text>
+        <text x="298" y="107" font-family="JetBrains Mono" font-size="11" fill="#8b949e">  h3 &gt; a</text>
+        <text x="298" y="124" font-family="JetBrains Mono" font-size="11" fill="#7ec894">  .price_color</text>
+        <text x="298" y="158" font-family="JetBrains Mono" font-size="10" fill="#c9983a">soup.select("article.product_pod")</text>
+      </svg>
+      <p class="svg-caption">El selector CSS apunta al card destacado — el mismo sirve en Python</p>
+    </div>
+
+    <div class="callout">
+      <p class="callout-label">Principio Clave</p>
+      <p>Los datos en la web rara vez vienen limpios. Los selectores CSS te permiten <strong>ignorar el ruido y apuntar exactamente a la señal.</strong> Lo que funciona en el inspector, funciona en <strong>soup.select()</strong>.</p>
+    </div>
+
+    <div class="practice">
+      <p><strong>Práctica:</strong> Abre <code>books.toscrape.com</code> en Chrome. Abre la consola del navegador (F12 → Console) y ejecuta <code>document.querySelectorAll('.price_color').length</code>. Verás un número. Luego en Python ejecuta <code>len(soup.select('.price_color'))</code>. Ambos deben coincidir exactamente. Esa coherencia es la base del scraping confiable.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════ CAPÍTULO V -->
+<article class="chapter reveal" id="cap5">
+  <div class="chapter-meta">
+    <span class="chapter-num">V</span>
+    <div class="chapter-label-group">
+      <span class="chapter-label">Capítulo Cinco</span>
+      <span class="chapter-timing">&#9201; 30 minutos</span>
+    </div>
+  </div>
+  <h2 class="chapter-title">Laboratorio Práctico<br>Trabajamos en VS Code</h2>
+  <div class="chapter-rule"></div>
+  <div class="chapter-body">
+    <p>Todo conocimiento teórico encuentra su verdadero valor en la aplicación. Este capítulo cierra el circuito: tomamos lo aprendido sobre estructura y selectores y lo materializamos en un reporte HTML profesional.</p>
+
+    <h3 class="section-title">Estructura del proyecto</h3>
+
+    <!-- SVG 6: Árbol de carpetas -->
+    <div class="svg-figure reveal">
+      <svg width="100%" viewBox="0 0 460 230" xmlns="http://www.w3.org/2000/svg">
+        <rect x="30" y="16" width="160" height="26" rx="3" fill="#3d2a10" stroke="#c9983a" stroke-width="1.5"/>
+        <text x="44"  y="34" font-family="JetBrains Mono" font-size="12" fill="#c9983a">&#128193; reporte-ia/</text>
+        <line x1="46" y1="42" x2="46" y2="198" stroke="#2e2520" stroke-width="1.5"/>
+        <!-- index.html -->
+        <line x1="46" y1="60" x2="70" y2="60" stroke="#2e2520" stroke-width="1.5"/>
+        <rect x="72" y="48" width="160" height="24" rx="3" fill="#2b1f0e" stroke="#79b8ff" stroke-width="1.2"/>
+        <text x="84"  y="65" font-family="JetBrains Mono" font-size="11" fill="#79b8ff">&#128196; index.html</text>
+        <text x="252" y="65" font-family="JetBrains Mono" font-size="9" fill="#79b8ff">&#8592; estructura</text>
+        <!-- css/ -->
+        <line x1="46" y1="96" x2="70" y2="96" stroke="#2e2520" stroke-width="1.5"/>
+        <rect x="72" y="84" width="130" height="24" rx="3" fill="#2b1f0e" stroke="#ffab70" stroke-width="1.2"/>
+        <text x="84"  y="101" font-family="JetBrains Mono" font-size="11" fill="#ffab70">&#128193; css/</text>
+        <text x="252" y="101" font-family="JetBrains Mono" font-size="9" fill="#ffab70">&#8592; estilos</text>
+        <line x1="86" y1="108" x2="86" y2="132" stroke="#2e2520" stroke-width="1.2"/>
+        <line x1="86" y1="120" x2="106" y2="120" stroke="#2e2520" stroke-width="1.2"/>
+        <rect x="108" y="110" width="130" height="22" rx="3" fill="#1e1612" stroke="#665c52"/>
+        <text x="118" y="126" font-family="JetBrains Mono" font-size="10" fill="#8b949e">estilo.css</text>
+        <!-- datos/ -->
+        <line x1="46" y1="156" x2="70" y2="156" stroke="#2e2520" stroke-width="1.5"/>
+        <rect x="72" y="144" width="130" height="24" rx="3" fill="#2b1f0e" stroke="#7ec894" stroke-width="1.2"/>
+        <text x="84"  y="161" font-family="JetBrains Mono" font-size="11" fill="#7ec894">&#128193; datos/</text>
+        <text x="252" y="161" font-family="JetBrains Mono" font-size="9" fill="#7ec894">&#8592; output ML</text>
+        <line x1="86" y1="168" x2="86" y2="192" stroke="#2e2520" stroke-width="1.2"/>
+        <line x1="86" y1="180" x2="106" y2="180" stroke="#2e2520" stroke-width="1.2"/>
+        <rect x="108" y="170" width="130" height="22" rx="3" fill="#1e1612" stroke="#665c52"/>
+        <text x="118" y="186" font-family="JetBrains Mono" font-size="10" fill="#8b949e">resultados.json</text>
+      </svg>
+      <p class="svg-caption">Estructura de carpetas del proyecto de reporte técnico en VS Code</p>
+    </div>
+
+    <h3 class="section-title">Ejemplo: reporte de modelo IA completo</h3>
+    <p>Construido desde cero en VS Code con Emmet. Muestra métricas reales de un clasificador de texto:</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-dot red"></span><span class="code-dot amber"></span><span class="code-dot green"></span><span class="code-filename">index.html — Reporte Clasificador IA</span></div>
+      <div class="code-body"><pre><span class="ck">&lt;!DOCTYPE</span> <span class="cn">html</span><span class="ck">&gt;</span>
+<span class="ck">&lt;html</span> <span class="cn">lang</span>=<span class="cs">"es"</span><span class="ck">&gt;</span>
+<span class="ck">&lt;head&gt;</span>
+  <span class="ck">&lt;meta</span> <span class="cn">charset</span>=<span class="cs">"UTF-8"</span><span class="ck">&gt;</span>
+  <span class="ck">&lt;title&gt;</span><span class="ct">Clasificador Sentimientos — v1.2</span><span class="ck">&lt;/title&gt;</span>
+  <span class="ck">&lt;style&gt;</span>
+    <span class="cf">body</span>  { <span class="cn">font-family</span>: <span class="cv">system-ui</span>; <span class="cn">max-width</span>: <span class="cv">860px</span>; <span class="cn">margin</span>: <span class="cv">0 auto</span>; <span class="cn">padding</span>: <span class="cv">2rem</span>; }
+    <span class="cf">h1</span>   { <span class="cn">border-bottom</span>: <span class="cv">3px solid #e94560</span>; <span class="cn">padding-bottom</span>: <span class="cv">.4rem</span>; }
+    <span class="ck">.</span><span class="cf">kpi</span> {
+      <span class="cn">display</span>: <span class="cv">inline-block</span>; <span class="cn">background</span>: <span class="cv">#16213e</span>;
+      <span class="cn">color</span>: <span class="cv">#e94560</span>; <span class="cn">padding</span>: <span class="cv">.6rem 1.4rem</span>; <span class="cn">border-radius</span>: <span class="cv">4px</span>;
+      <span class="cn">font-size</span>: <span class="cv">1.3rem</span>; <span class="cn">font-weight</span>: <span class="cv">bold</span>; <span class="cn">margin</span>: <span class="cv">.3rem</span>;
+    }
+    <span class="cf">table</span> { <span class="cn">width</span>: <span class="cv">100%</span>; <span class="cn">border-collapse</span>: <span class="cv">collapse</span>; }
+    <span class="cf">th</span>    { <span class="cn">background</span>: <span class="cv">#1a1a2e</span>; <span class="cn">color</span>: <span class="cv">white</span>; <span class="cn">padding</span>: <span class="cv">.6rem</span>; }
+    <span class="cf">td</span>    { <span class="cn">border</span>: <span class="cv">1px solid #ddd</span>; <span class="cn">padding</span>: <span class="cv">.5rem</span>; <span class="cn">text-align</span>: <span class="cv">center</span>; }
+    <span class="cf">tr</span><span class="ck">:nth-child(even)</span> { <span class="cn">background</span>: <span class="cv">#f4f4f4</span>; }
+  <span class="ck">&lt;/style&gt;</span>
+<span class="ck">&lt;/head&gt;</span>
+<span class="ck">&lt;body&gt;</span>
+
+  <span class="ck">&lt;header&gt;</span>
+    <span class="ck">&lt;h1&gt;</span><span class="ct">Clasificador de Sentimientos — v1.2</span><span class="ck">&lt;/h1&gt;</span>
+    <span class="ck">&lt;p&gt;</span><span class="ct">Dataset: </span><span class="ck">&lt;em&gt;</span><span class="ct">Amazon Reviews ES</span><span class="ck">&lt;/em&gt;</span>
+       <span class="ct"> · Entrenado: 2025-06-28 · Scikit-learn 1.4</span><span class="ck">&lt;/p&gt;</span>
+  <span class="ck">&lt;/header&gt;</span>
+
+  <span class="ck">&lt;section&gt;</span>
+    <span class="ck">&lt;h2&gt;</span><span class="ct">Métricas Globales</span><span class="ck">&lt;/h2&gt;</span>
+    <span class="ck">&lt;span</span> <span class="cn">class</span>=<span class="cs">"kpi"</span><span class="ck">&gt;</span><span class="ct">Accuracy: 91.4 %</span><span class="ck">&lt;/span&gt;</span>
+    <span class="ck">&lt;span</span> <span class="cn">class</span>=<span class="cs">"kpi"</span><span class="ck">&gt;</span><span class="ct">F1-score: 0.89</span><span class="ck">&lt;/span&gt;</span>
+    <span class="ck">&lt;span</span> <span class="cn">class</span>=<span class="cs">"kpi"</span><span class="ck">&gt;</span><span class="ct">AUC-ROC: 0.96</span><span class="ck">&lt;/span&gt;</span>
+  <span class="ck">&lt;/section&gt;</span>
+
+  <span class="ck">&lt;section&gt;</span>
+    <span class="ck">&lt;h2&gt;</span><span class="ct">Resultados por Clase</span><span class="ck">&lt;/h2&gt;</span>
+    <span class="ck">&lt;table&gt;</span>
+      <span class="ck">&lt;tr&gt;&lt;th&gt;</span><span class="ct">Clase</span><span class="ck">&lt;/th&gt;&lt;th&gt;</span><span class="ct">Precisión</span><span class="ck">&lt;/th&gt;</span>
+              <span class="ck">&lt;th&gt;</span><span class="ct">Recall</span><span class="ck">&lt;/th&gt;&lt;th&gt;</span><span class="ct">F1</span><span class="ck">&lt;/th&gt;&lt;/tr&gt;</span>
+      <span class="ck">&lt;tr&gt;&lt;td&gt;</span><span class="ct">Positivo</span><span class="ck">&lt;/td&gt;&lt;td&gt;</span><span class="ct">0.93</span><span class="ck">&lt;/td&gt;</span>
+              <span class="ck">&lt;td&gt;</span><span class="ct">0.91</span><span class="ck">&lt;/td&gt;&lt;td&gt;</span><span class="ct">0.92</span><span class="ck">&lt;/td&gt;&lt;/tr&gt;</span>
+      <span class="ck">&lt;tr&gt;&lt;td&gt;</span><span class="ct">Negativo</span><span class="ck">&lt;/td&gt;&lt;td&gt;</span><span class="ct">0.90</span><span class="ck">&lt;/td&gt;</span>
+              <span class="ck">&lt;td&gt;</span><span class="ct">0.88</span><span class="ck">&lt;/td&gt;&lt;td&gt;</span><span class="ct">0.89</span><span class="ck">&lt;/td&gt;&lt;/tr&gt;</span>
+      <span class="ck">&lt;tr&gt;&lt;td&gt;</span><span class="ct">Neutro</span><span class="ck">&lt;/td&gt;&lt;td&gt;</span><span class="ct">0.87</span><span class="ck">&lt;/td&gt;</span>
+              <span class="ck">&lt;td&gt;</span><span class="ct">0.85</span><span class="ck">&lt;/td&gt;&lt;td&gt;</span><span class="ct">0.86</span><span class="ck">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="ck">&lt;/table&gt;</span>
+  <span class="ck">&lt;/section&gt;</span>
+
+  <span class="ck">&lt;footer&gt;</span>
+    <span class="ck">&lt;p&gt;</span><span class="ct">Generado automáticamente · Bootcamp IA 2025</span><span class="ck">&lt;/p&gt;</span>
+  <span class="ck">&lt;/footer&gt;</span>
+
+<span class="ck">&lt;/body&gt;&lt;/html&gt;</span></pre></div>
+    </div>
+
+    <!-- SVG 7: Preview del reporte en navegador -->
+    <div class="svg-figure reveal">
+      <svg width="100%" viewBox="0 0 560 290" xmlns="http://www.w3.org/2000/svg">
+        <!-- Chrome frame -->
+        <rect x="10" y="10" width="540" height="270" rx="6" fill="#0d1117" stroke="#2e2520"/>
+        <rect x="10" y="10" width="540" height="32"  rx="6" fill="#161b22"/>
+        <rect x="10" y="28" width="540" height="14"  fill="#161b22"/>
+        <circle cx="28" cy="26" r="5" fill="#ff5f57"/>
+        <circle cx="44" cy="26" r="5" fill="#febc2e"/>
+        <circle cx="60" cy="26" r="5" fill="#28c840"/>
+        <rect x="80" y="18" width="350" height="16" rx="8" fill="#21262d"/>
+        <text x="255" y="31" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#8b949e">Clasificador Sentimientos — v1.2</text>
+        <!-- Page -->
+        <rect x="22" y="50" width="516" height="3" fill="#e94560"/>
+        <text x="32" y="74" font-family="JetBrains Mono" font-size="13" fill="#e1e4e8" font-weight="bold">Clasificador de Sentimientos — v1.2</text>
+        <text x="32" y="90" font-family="JetBrains Mono" font-size="9" fill="#8b949e">Dataset: Amazon Reviews ES  ·  Entrenado: 2025-06-28</text>
+        <!-- KPIs -->
+        <text x="32" y="114" font-family="JetBrains Mono" font-size="10" fill="#c9c9c9" font-weight="bold">Métricas Globales</text>
+        <rect x="32"  y="120" width="130" height="28" rx="4" fill="#16213e"/>
+        <rect x="170" y="120" width="115" height="28" rx="4" fill="#16213e"/>
+        <rect x="293" y="120" width="115" height="28" rx="4" fill="#16213e"/>
+        <text x="97"  y="140" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#e94560" font-weight="bold">Accuracy 91.4%</text>
+        <text x="227" y="140" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#e94560" font-weight="bold">F1 0.89</text>
+        <text x="350" y="140" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#e94560" font-weight="bold">AUC 0.96</text>
+        <!-- Table header -->
+        <text x="32" y="170" font-family="JetBrains Mono" font-size="10" fill="#c9c9c9" font-weight="bold">Resultados por Clase</text>
+        <rect x="32" y="176" width="496" height="22" fill="#1a1a2e"/>
+        <text x="90"  y="192" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="white">Clase</text>
+        <text x="230" y="192" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="white">Precisión</text>
+        <text x="370" y="192" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="white">Recall</text>
+        <text x="490" y="192" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="white">F1</text>
+        <!-- Rows -->
+        <rect x="32" y="198" width="496" height="19" fill="#1a1610"/>
+        <text x="90"  y="212" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#e1e4e8">Positivo</text>
+        <text x="230" y="212" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7ec894">0.93</text>
+        <text x="370" y="212" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7ec894">0.91</text>
+        <text x="490" y="212" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7ec894">0.92</text>
+        <rect x="32" y="217" width="496" height="19" fill="#111"/>
+        <text x="90"  y="231" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#e1e4e8">Negativo</text>
+        <text x="230" y="231" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#ffab70">0.90</text>
+        <text x="370" y="231" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#ffab70">0.88</text>
+        <text x="490" y="231" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#ffab70">0.89</text>
+        <rect x="32" y="236" width="496" height="19" fill="#1a1610"/>
+        <text x="90"  y="250" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#e1e4e8">Neutro</text>
+        <text x="230" y="250" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#f97583">0.87</text>
+        <text x="370" y="250" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#f97583">0.85</text>
+        <text x="490" y="250" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#f97583">0.86</text>
+        <!-- Footer -->
+        <text x="255" y="274" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#665c52">Generado automáticamente · Bootcamp IA 2025</text>
+      </svg>
+      <p class="svg-caption">Vista previa del reporte renderizado en el navegador</p>
+    </div>
+
+    <h3 class="section-title">Atajos Emmet esenciales para HTML en VS Code</h3>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-dot red"></span><span class="code-dot amber"></span><span class="code-dot green"></span><span class="code-filename">emmet-cheatsheet.txt</span></div>
+      <div class="code-body"><pre><span class="cc">── Escribe en VS Code y pulsa Tab ───────────────────────</span>
+
+<span class="cs">!</span>                   <span class="cc">→ boilerplate HTML5 completo</span>
+<span class="cs">div.contenedor</span>     <span class="cc">→ &lt;div class="contenedor"&gt;&lt;/div&gt;</span>
+<span class="cs">h2#titulo</span>           <span class="cc">→ &lt;h2 id="titulo"&gt;&lt;/h2&gt;</span>
+<span class="cs">ul&gt;li*5</span>             <span class="cc">→ lista ul con 5 elementos li</span>
+<span class="cs">table&gt;tr*3&gt;td*4</span>    <span class="cc">→ tabla 3 filas × 4 columnas</span>
+<span class="cs">header+main+footer</span>  <span class="cc">→ 3 semánticas seguidas</span>
+<span class="cs">p{Texto aquí}</span>      <span class="cc">→ &lt;p&gt;Texto aquí&lt;/p&gt;</span>
+<span class="cs">span.kpi*3</span>          <span class="cc">→ 3 spans con clase kpi</span>
+
+<span class="cc">── Flujo recomendado ────────────────────────────────────</span>
+
+<span class="cv">1.</span> <span class="ct">Genera la estructura con Emmet (muy rápido)</span>
+<span class="cv">2.</span> <span class="ct">Añade clases CSS descriptivas (mismas que usarás en soup)</span>
+<span class="cv">3.</span> <span class="ct">Rellena con datos reales de tu modelo</span>
+<span class="cv">4.</span> <span class="ct">Previsualiza con la extensión Live Preview</span>
+<span class="cv">5.</span> <span class="ct">Guarda como portfolio-piece en tu GitHub</span></pre></div>
+    </div>
+
+    <div class="callout">
+      <p class="callout-label">Cierre del Módulo</p>
+      <p>Al terminar este laboratorio habrás creado un documento web completo: estructura semántica, estilos coherentes y métricas reales de un modelo de IA. Las mismas habilidades que usaste para <strong>construirlo</strong> te servirán para <strong>leer, extraer y analizar</strong> cualquier documento de la web con Python.</p>
+    </div>
+
+    <div class="practice">
+      <p><strong>Práctica final:</strong> Crea el proyecto desde cero en VS Code. Usa <code>!</code> + Tab para el boilerplate, añade <code>header</code>, <code>main</code> y <code>footer</code> con Emmet, incorpora métricas reales de cualquier modelo entrenado en el bootcamp, y estiliza la tabla con CSS. El archivo debe abrirse en el navegador y ser comprensible para alguien sin conocimientos técnicos. Súbelo a tu repositorio GitHub como primer artefacto de portfolio web.</p>
+    </div>
+  </div>
+</article>
+
+<!-- COLOPHON -->
+<footer class="colophon">
+  <p><span>Hoja de Ruta</span> &middot; Desarrollo Web para IA<br>Módulo de formación técnica &middot; Bootcamp IA</p>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} });
+  }, { threshold:0.08, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => { e.preventDefault(); const t=document.querySelector(a.getAttribute('href')); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); });
+  });
+</script>
+</body>
+</html>
